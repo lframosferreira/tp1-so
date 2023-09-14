@@ -77,6 +77,8 @@ void runcmd(struct cmd *cmd)
     ecmd = (struct execcmd *)cmd;
     if (ecmd->argv[0] == 0)
       exit(0);
+    
+    execvp(ecmd->argv[0], ecmd->argv);
 
     // ls
     if (strcmp(ecmd->argv[0], "ls") == 0)
@@ -161,11 +163,22 @@ void runcmd(struct cmd *cmd)
 
   case '|':
     pcmd = (struct pipecmd *)cmd;
-    /* MARK START task4
-     * TAREFA4: Implemente codigo abaixo para executar
-     * comando com pipes. */
+    
+    if (pipe(p) == -1){
+      fprintf(stderr, "Erro ao abrir pipe");
+    }
+    
+    // Processo esquerdo do pipe
+    // Usa apenas a parte de escrita do pipe
+    if (fork1() == 0){
+      close(p[0]);
+      close(p[1]);
+    }
+
+
+
+
     fprintf(stderr, "pipe nao implementado\n");
-    /* MARK END task4 */
     break;
   }
   exit(0);
