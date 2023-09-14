@@ -140,17 +140,23 @@ void runcmd(struct cmd *cmd)
         fprintf(stderr, "Erro ao executar execvp com echo\n");
       };
     }
+
+    fprintf(stderr, "O exec não foi desenvolvido para o comando passado.");
     break;
 
   case '>':
   case '<':
     rcmd = (struct redircmd *)cmd;
 
-    rcmd->fd = open(rcmd->file, rcmd->mode, S_IRWXU);
+    int newfd = open(rcmd->file, rcmd->mode, S_IRWXU);
 
-    if (rcmd->fd < 0) {
+    if (rcmd->fd < 0)
+    {
       fprintf(stderr, "Erro ao abrir o arquivo %s\n.", rcmd->file);
     }
+
+ 
+
     runcmd(rcmd->cmd);
     break;
 
