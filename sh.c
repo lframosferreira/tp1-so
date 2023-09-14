@@ -77,24 +77,80 @@ void runcmd(struct cmd *cmd)
     ecmd = (struct execcmd *)cmd;
     if (ecmd->argv[0] == 0)
       exit(0);
-    /* MARK START task2
-     * TAREFA2: Implemente codigo abaixo para executar
-     * comandos simples. */
 
-    // adicionei
-    struct cmd* mycmd = execcmd();
-    fprintf(stderr, "exec nao implementado\n");
-    /* MARK END task2 */
+    // ls
+    if (strcmp(ecmd->argv[0], "ls") == 0)
+    {
+      if (execvp("ls", ecmd->argv) < 0)
+      {
+        fprintf(stderr, "Erro ao executar execvp com ls\n");
+      };
+    }
+
+    // cat
+    if (strcmp(ecmd->argv[0], "cat") == 0)
+    {
+      if (execvp("cat", ecmd->argv) < 0)
+      {
+        fprintf(stderr, "Erro ao executar execvp com cat\n");
+      };
+    }
+
+    // sort
+    if (strcmp(ecmd->argv[0], "sort") == 0)
+    {
+      if (execvp("sort", ecmd->argv) < 0)
+      {
+        fprintf(stderr, "Erro ao executar execvp com sort\n");
+      };
+    }
+
+    // uniq
+    if (strcmp(ecmd->argv[0], "uniq") == 0)
+    {
+      if (execvp("uniq", ecmd->argv) < 0)
+      {
+        fprintf(stderr, "Erro ao executar execvp com uniq\n");
+      };
+    }
+
+    // wc
+    if (strcmp(ecmd->argv[0], "wc") == 0)
+    {
+      if (execvp("wc", ecmd->argv) < 0)
+      {
+        fprintf(stderr, "Erro ao executar execvp com wc\n");
+      };
+    }
+
+    // rm
+    if (strcmp(ecmd->argv[0], "rm") == 0)
+    {
+      if (execvp("rm", ecmd->argv) < 0)
+      {
+        fprintf(stderr, "Erro ao executar execvp com rm\n");
+      };
+    }
+
+    // echo
+    if (strcmp(ecmd->argv[0], "echo") == 0)
+    {
+      if (execvp("echo", ecmd->argv) < 0)
+      {
+        fprintf(stderr, "Erro ao executar execvp com echo\n");
+      };
+    }
     break;
 
   case '>':
   case '<':
     rcmd = (struct redircmd *)cmd;
-    /* MARK START task3
-     * TAREFA3: Implemente codigo abaixo para executar
-     * comando com redirecionamento. */
-    fprintf(stderr, "redir nao implementado\n");
-    /* MARK END task3 */
+
+    rcmd->fd = open(rcmd->file, rcmd->mode, S_IRWXU);
+
+    if (rcmd->fd < 0) {
+      fprintf(stderr, "Erro ao abrir o arquivo %s\n.", rcmd->file);
+    }
     runcmd(rcmd->cmd);
     break;
 

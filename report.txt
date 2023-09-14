@@ -20,6 +20,8 @@ Igor Lacerda Faria da Silva igorlafarsi@gmail.com 50%
 
 Livro tanembaum
 livro abraham
+https://www.digitalocean.com/community/tutorials/execvp-function-c-plus-plus
+https://man7.org/linux/man-pages/man2/open.2.html
 
 4. Estruturas de dados
 
