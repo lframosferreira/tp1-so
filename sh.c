@@ -148,16 +148,15 @@ void runcmd(struct cmd *cmd)
   case '<':
     rcmd = (struct redircmd *)cmd;
 
-    int newfd = open(rcmd->file, rcmd->mode, S_IRWXU);
+    close(rcmd->fd);
+    int k = open(rcmd->file, rcmd->mode, S_IRWXU);
 
-    if (rcmd->fd < 0)
+    if (k < 0)
     {
       fprintf(stderr, "Erro ao abrir o arquivo %s\n.", rcmd->file);
     }
 
- 
-
-    runcmd(rcmd->cmd);
+     runcmd(rcmd->cmd);
     break;
 
   case '|':
