@@ -16,26 +16,38 @@
 
 volatile bool keepRunning = true;
 
-typedef struct proc_info {
-  int pid;
-  char *name;
-  char state;
-  char *user;
-} proc_info;
+static char *token;
+
+void get_name(char *filePath) {
+  FILE *fileHandler = fopen(filePath, "r");
+  if (fileHandler == NULL) {
+    perror("Erro ao abrir arquivo: ");
+    exit(1);
+  }
+
+  char buffer[BUFFER_SIZE];
+  fgets(buffer, BUFFER_SIZE, fileHandler);
+
+  token = strtok(buffer, " "); // PID
+  token = strtok(NULL, " ");   // PROCNAME
+  fputs(token, stdout);
+  token = strtok(NULL, " "); // STATE
+  fclose(fileHandler);
+}
 
 void *print_processes(void *dir) {
-  // TODO quebrar essa função em bloquinhos porque a complexidade ciclomática
-  // dela está muito grande
   DIR *directory = (DIR *)dir;
-  proc_info processes[STAT_COUNTER_MAX];
 
   struct dirent *entry;
+
   while (keepRunning) {
     int statCounter = 0;
+
     printf("\nPID User PROCNAME Estado\n");
+
     while ((entry = readdir(directory))) {
-      char *name = NULL;
       int pid;
+
       if (entry->d_type == DT_DIR && isdigit(entry->d_name[0])) {
         pid = atoi(entry->d_name);
 
@@ -43,32 +55,13 @@ void *print_processes(void *dir) {
         char filePath[FILE_PATH_SIZE];
         snprintf(filePath, sizeof(filePath), "/proc/%d/stat", pid);
 
-        FILE *fileHandler = fopen(filePath, "r");
-        if (fileHandler == NULL) {
-          perror("Erro ao abrir arquivo: ");
-          exit(1);
-        }
-
-        char lineBuffer[BUFFER_SIZE];
-        fgets(lineBuffer, BUFFER_SIZE, fileHandler);
-        char *token = strtok(lineBuffer, " "); // PID
-        token = strtok(NULL, " ");
-        name = token;
-        token = strtok(NULL, " "); // State
-
         if (stat(filePath, &statBuffer) == 0) {
           struct passwd *userData = getpwuid(statBuffer.st_uid);
 
           if (userData != NULL) {
-
-            proc_info *proc = &processes[statCounter];
-            proc->pid = pid;
-            proc->user = userData->pw_name;
-            proc->name = name;
-            proc->state = token[0];
-
-            printf("%d %s %s %c\n", proc->pid, proc->user, proc->name,
-                   proc->state);
+            printf("%d %s ", pid, userData->pw_name);
+            get_name(filePath);
+            printf(" %c\n", token[0]);
 
             statCounter++;
 
@@ -77,8 +70,6 @@ void *print_processes(void *dir) {
             }
           }
         }
-
-        fclose(fileHandler);
       }
     }
     rewinddir(directory);
