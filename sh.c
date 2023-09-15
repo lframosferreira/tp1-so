@@ -1,12 +1,12 @@
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <string.h>
 #include <assert.h>
-#include <sys/types.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 /* Luís Felipe Ramos Ferreira */
 /* Igor Lacerda Faria da Silva */
@@ -23,21 +23,18 @@
 /* Todos comandos tem um tipo.  Depois de olhar para o tipo do
  * comando, o código converte um *cmd para o tipo específico de
  * comando. */
-struct cmd
-{
+struct cmd {
   int type; /* ' ' (exec)
                '|' (pipe)
                '<' or '>' (redirection) */
 };
 
-struct execcmd
-{
+struct execcmd {
   int type;            // ' '
   char *argv[MAXARGS]; // argumentos do comando a ser exec'utado
 };
 
-struct redircmd
-{
+struct redircmd {
   int type;        // < ou >
   struct cmd *cmd; // o comando a rodar (ex.: um execcmd)
   char *file;      // o arquivo de entrada ou saída
@@ -45,8 +42,7 @@ struct redircmd
   int fd;          // o número de descritor de arquivo que deve ser usado
 };
 
-struct pipecmd
-{
+struct pipecmd {
   int type;          // |
   struct cmd *left;  // lado esquerdo do pipe
   struct cmd *right; // lado direito do pipe
@@ -57,9 +53,8 @@ struct cmd *parsecmd(char *); // Processar o linha de comando.
 struct cmd *execcmd(void);
 
 /* Executar comando cmd.  Nunca retorna. */
-void runcmd(struct cmd *cmd)
-{
-  int p[2], r;
+void runcmd(struct cmd *cmd) {
+  int p[2];
   struct execcmd *ecmd;
   struct pipecmd *pcmd;
   struct redircmd *rcmd;
@@ -67,8 +62,7 @@ void runcmd(struct cmd *cmd)
   if (cmd == 0)
     exit(0);
 
-  switch (cmd->type)
-  {
+  switch (cmd->type) {
   default:
     fprintf(stderr, "tipo de comando desconhecido\n");
     exit(-1);
@@ -106,8 +100,7 @@ void runcmd(struct cmd *cmd)
   case '|':
     pcmd = (struct pipecmd *)cmd;
 
-    if (pipe(p) == -1)
-    {
+    if (pipe(p) == -1) {
       fprintf(stderr, "Erro ao abrir pipe");
     }
 
@@ -143,8 +136,7 @@ void runcmd(struct cmd *cmd)
   exit(0);
 }
 
-int getcmd(char *buf, int nbuf)
-{
+int getcmd(char *buf, int nbuf) {
   if (isatty(fileno(stdin)))
     fprintf(stdout, "$ ");
   memset(buf, 0, nbuf);
@@ -154,16 +146,13 @@ int getcmd(char *buf, int nbuf)
   return 0;
 }
 
-int main(void)
-{
+int main(void) {
   static char buf[100];
   int r;
 
   // Ler e rodar comandos.
-  while (getcmd(buf, sizeof(buf)) >= 0)
-  {
-    if (buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' ')
-    {
+  while (getcmd(buf, sizeof(buf)) >= 0) {
+    if (buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' ') {
       buf[strlen(buf) - 1] = 0;
       if (chdir(buf + 3) < 0)
         fprintf(stderr, "reporte erro\n");
@@ -177,8 +166,7 @@ int main(void)
   exit(0);
 }
 
-int fork1(void)
-{
+int fork1(void) {
   int pid;
 
   pid = fork();
@@ -192,9 +180,7 @@ int fork1(void)
  * Funcoes auxiliares para criar estruturas de comando
  ***************************************************************/
 
-struct cmd *
-execcmd(void)
-{
+struct cmd *execcmd(void) {
   struct execcmd *cmd;
   cmd = malloc(sizeof(*cmd));
   memset(cmd, 0, sizeof(*cmd));
@@ -202,9 +188,7 @@ execcmd(void)
   return (struct cmd *)cmd;
 }
 
-struct cmd *
-redircmd(struct cmd *subcmd, char *file, int type)
-{
+struct cmd *redircmd(struct cmd *subcmd, char *file, int type) {
   struct redircmd *cmd;
 
   cmd = malloc(sizeof(*cmd));
@@ -217,9 +201,7 @@ redircmd(struct cmd *subcmd, char *file, int type)
   return (struct cmd *)cmd;
 }
 
-struct cmd *
-pipecmd(struct cmd *left, struct cmd *right)
-{
+struct cmd *pipecmd(struct cmd *left, struct cmd *right) {
   struct pipecmd *cmd;
 
   cmd = malloc(sizeof(*cmd));
@@ -237,8 +219,7 @@ pipecmd(struct cmd *left, struct cmd *right)
 char whitespace[] = " \t\r\n\v";
 char symbols[] = "<|>";
 
-int gettoken(char **ps, char *es, char **q, char **eq)
-{
+int gettoken(char **ps, char *es, char **q, char **eq) {
   char *s;
   int ret;
 
@@ -248,8 +229,7 @@ int gettoken(char **ps, char *es, char **q, char **eq)
   if (q)
     *q = s;
   ret = *s;
-  switch (*s)
-  {
+  switch (*s) {
   case 0:
     break;
   case '|':
@@ -274,8 +254,7 @@ int gettoken(char **ps, char *es, char **q, char **eq)
   return ret;
 }
 
-int peek(char **ps, char *es, char *toks)
-{
+int peek(char **ps, char *es, char *toks) {
   char *s;
 
   s = *ps;
@@ -291,8 +270,7 @@ struct cmd *parseexec(char **, char *);
 
 /* Copiar os caracteres no buffer de entrada, comeando de s ate es.
  * Colocar terminador zero no final para obter um string valido. */
-char *mkcopy(char *s, char *es)
-{
+char *mkcopy(char *s, char *es) {
   int n = es - s;
   char *c = malloc(n + 1);
   assert(c);
@@ -301,61 +279,48 @@ char *mkcopy(char *s, char *es)
   return c;
 }
 
-struct cmd *
-parsecmd(char *s)
-{
+struct cmd *parsecmd(char *s) {
   char *es;
   struct cmd *cmd;
 
   es = s + strlen(s);
   cmd = parseline(&s, es);
   peek(&s, es, "");
-  if (s != es)
-  {
+  if (s != es) {
     fprintf(stderr, "leftovers: %s\n", s);
     exit(-1);
   }
   return cmd;
 }
 
-struct cmd *
-parseline(char **ps, char *es)
-{
+struct cmd *parseline(char **ps, char *es) {
   struct cmd *cmd;
   cmd = parsepipe(ps, es);
   return cmd;
 }
 
-struct cmd *
-parsepipe(char **ps, char *es)
-{
+struct cmd *parsepipe(char **ps, char *es) {
   struct cmd *cmd;
 
   cmd = parseexec(ps, es);
-  if (peek(ps, es, "|"))
-  {
+  if (peek(ps, es, "|")) {
     gettoken(ps, es, 0, 0);
     cmd = pipecmd(cmd, parsepipe(ps, es));
   }
   return cmd;
 }
 
-struct cmd *
-parseredirs(struct cmd *cmd, char **ps, char *es)
-{
+struct cmd *parseredirs(struct cmd *cmd, char **ps, char *es) {
   int tok;
   char *q, *eq;
 
-  while (peek(ps, es, "<>"))
-  {
+  while (peek(ps, es, "<>")) {
     tok = gettoken(ps, es, 0, 0);
-    if (gettoken(ps, es, &q, &eq) != 'a')
-    {
+    if (gettoken(ps, es, &q, &eq) != 'a') {
       fprintf(stderr, "missing file for redirection\n");
       exit(-1);
     }
-    switch (tok)
-    {
+    switch (tok) {
     case '<':
       cmd = redircmd(cmd, mkcopy(q, eq), '<');
       break;
@@ -367,9 +332,7 @@ parseredirs(struct cmd *cmd, char **ps, char *es)
   return cmd;
 }
 
-struct cmd *
-parseexec(char **ps, char *es)
-{
+struct cmd *parseexec(char **ps, char *es) {
   char *q, *eq;
   int tok, argc;
   struct execcmd *cmd;
@@ -380,19 +343,16 @@ parseexec(char **ps, char *es)
 
   argc = 0;
   ret = parseredirs(ret, ps, es);
-  while (!peek(ps, es, "|"))
-  {
+  while (!peek(ps, es, "|")) {
     if ((tok = gettoken(ps, es, &q, &eq)) == 0)
       break;
-    if (tok != 'a')
-    {
+    if (tok != 'a') {
       fprintf(stderr, "syntax error\n");
       exit(-1);
     }
     cmd->argv[argc] = mkcopy(q, eq);
     argc++;
-    if (argc >= MAXARGS)
-    {
+    if (argc >= MAXARGS) {
       fprintf(stderr, "too many args\n");
       exit(-1);
     }
