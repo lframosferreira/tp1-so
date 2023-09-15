@@ -77,7 +77,7 @@ void runcmd(struct cmd *cmd)
     ecmd = (struct execcmd *)cmd;
     if (ecmd->argv[0] == 0)
       exit(0);
-    
+
     execvp(ecmd->argv[0], ecmd->argv);
 
     // ls
@@ -158,27 +158,54 @@ void runcmd(struct cmd *cmd)
       fprintf(stderr, "Erro ao abrir o arquivo %s\n.", rcmd->file);
     }
 
-     runcmd(rcmd->cmd);
+    runcmd(rcmd->cmd);
     break;
 
   case '|':
     pcmd = (struct pipecmd *)cmd;
-    
-    if (pipe(p) == -1){
+
+    if (pipe(p) == -1)
+    {
       fprintf(stderr, "Erro ao abrir pipe");
     }
-    
+
+    // p[0] leitura
+    // p[1] escrita
+
     // Processo esquerdo do pipe
-    // Usa apenas a parte de escrita do pipe
-    if (fork1() == 0){
+    int pid1 = fork1();
+    if (pid1 == -1)
+    {
+      fprintf(stderr, "Erro ao executar fork()\n");
+    }
+    if (pid1 == 0)
+    {
       close(p[0]);
+      dup2(p[1], STDOUT_FILENO);
       close(p[1]);
+      runcmd(pcmd->left);
     }
 
+    // Processo direito do pipe
+    int pid2 = fork1();
+    if (pid2 == -1)
+    {
+      fprintf(stderr, "Erro ao executar fork()\n");
+    }
+    if (pid2 == 0)
+    {
+      close(p[1]);
+      dup2(p[0], STDIN_FILENO);
+      close(p[0]);
+      runcmd(pcmd->right);
+    }
 
+    close(p[0]);
+    close(p[1]);
 
+    waitpid(pid1, NULL, 0);
+    waitpid(pid2, NULL, 0);
 
-    fprintf(stderr, "pipe nao implementado\n");
     break;
   }
   exit(0);
