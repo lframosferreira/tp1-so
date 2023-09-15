@@ -174,29 +174,19 @@ void runcmd(struct cmd *cmd)
 
     // Processo esquerdo do pipe
     int pid1 = fork1();
-    if (pid1 == -1)
-    {
-      fprintf(stderr, "Erro ao executar fork()\n");
-    }
-    if (pid1 == 0)
-    {
-      close(p[0]);
+    if (pid1 == 0) {
       dup2(p[1], STDOUT_FILENO);
+      close(p[0]);
       close(p[1]);
       runcmd(pcmd->left);
     }
 
     // Processo direito do pipe
     int pid2 = fork1();
-    if (pid2 == -1)
-    {
-      fprintf(stderr, "Erro ao executar fork()\n");
-    }
-    if (pid2 == 0)
-    {
-      close(p[1]);
+    if (pid2 == 0) {
       dup2(p[0], STDIN_FILENO);
       close(p[0]);
+      close(p[1]);
       runcmd(pcmd->right);
     }
 
@@ -251,7 +241,8 @@ int fork1(void)
 
   pid = fork();
   if (pid == -1)
-    perror("fork");
+    fprintf(stderr, "Erro ao executar fork()\n");
+
   return pid;
 }
 
