@@ -72,7 +72,7 @@ void runcmd(struct cmd *cmd) {
     if (ecmd->argv[0] == 0)
       exit(0);
 
-    if (execvp(ecmd->argv[0], ecmd->argv)) {
+    if (execvp(ecmd->argv[0], ecmd->argv) == -1) {
       fprintf(stderr, "Erro ao executar execvp com %s\n", ecmd->argv[0]);
     }
 
