@@ -89,11 +89,15 @@ void runcmd(struct cmd *cmd)
     rcmd = (struct redircmd *)cmd;
 
     close(rcmd->fd);
-    int k = open(rcmd->file, rcmd->mode, S_IRWXU);
+    int file = open(rcmd->file, rcmd->mode, S_IRWXU);
 
-    if (k < 0)
-    {
+    if (file < 0) {
       fprintf(stderr, "Erro ao abrir o arquivo %s\n.", rcmd->file);
+    }
+    if (cmd->type == '>') {
+      dup2(file, STDOUT_FILENO);
+    } else if (cmd->type == '<') {
+      dup2(file, STDIN_FILENO);
     }
 
     runcmd(rcmd->cmd);
