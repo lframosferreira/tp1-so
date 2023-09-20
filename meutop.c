@@ -80,10 +80,11 @@ void *print_processes(void *dir) {
 
 void *read_input(void *unused) {
   // HACK O compilador dá um warning se a função não tiver argumentos (tem que
-  // passar void) Se passar void, não tem como fazer casting (pelo menos eu não
-  // consegui) na hora de criar a thread Então a gente cria um ponteiro pra
-  // void, e "usa" ele pro compilador não reclamar Provalmente tem um jeito mais
-  // elegante de resolver isso
+  // passar pelo menos um void). Se passar void, não tem como fazer casting
+  // (pelo menos eu não consegui) na hora de criar a thread, porque a função
+  // para criar a thread espera um void *. Então a gente cria um ponteiro pra
+  // void, e "usa" ele pro compilador não reclamar. Provalmente tem um jeito
+  // mais elegante de resolver isso
 
   (void)unused;
 
@@ -100,9 +101,7 @@ void *read_input(void *unused) {
 }
 
 int main(void) {
-  DIR *directory;
-
-  directory = opendir("/proc");
+  DIR *directory = opendir("/proc");
 
   if (directory == NULL) {
     perror("Erro ao abrir o diretório /proc: ");
