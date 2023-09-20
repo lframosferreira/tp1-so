@@ -14,36 +14,48 @@
 #define FILE_PATH_SIZE 256
 #define STAT_COUNTER_MAX 20
 
-volatile bool keepRunning = true;
+// Constantes para organização do display do top
+#define PID_DISPLAY_WIDTH 10
+#define USER_DISPLAY_WIDTH 10
+#define PROCNAME DISPLAY WIDTH 10
+#define STATE_DISPLAY_WIDTH 10
+
+volatile bool keep_running = true;
 
 static char *token;
 
-void get_name(char *filePath) {
-  FILE *fileHandler = fopen(filePath, "r");
-  if (fileHandler == NULL) {
+void get_name(char *file_path) {
+  FILE *file_handler = fopen(file_path, "r");
+  if (file_handler == NULL) {
     perror("Erro ao abrir arquivo: ");
     exit(1);
   }
 
   char buffer[BUFFER_SIZE];
-  fgets(buffer, BUFFER_SIZE, fileHandler);
+  fgets(buffer, BUFFER_SIZE, file_handler);
 
   token = strtok(buffer, " "); // PID
   token = strtok(NULL, " ");   // PROCNAME
   fputs(token, stdout);
   token = strtok(NULL, " "); // STATE
-  fclose(fileHandler);
+  fclose(file_handler);
 }
 
-void *print_processes(void *dir) {
+void display_top_header()
+{
+    printf("|%-10s|", "PID");
+}
+
+void * print_processes(void *dir) {
   DIR *directory = (DIR *)dir;
 
   struct dirent *entry;
 
-  while (keepRunning) {
-    int statCounter = 0;
+  while (keep_running) {
+    int stat_counter = 0;
 
-    printf("\nPID User PROCNAME Estado\n");
+    printf("\nPID     | User    | PROCNAME         | Estado    |\n");
+    printf("--------|---------|------------------|-----------|\n");
 
     while ((entry = readdir(directory))) {
       int pid;
@@ -51,21 +63,21 @@ void *print_processes(void *dir) {
       if (entry->d_type == DT_DIR && isdigit(entry->d_name[0])) {
         pid = atoi(entry->d_name);
 
-        struct stat statBuffer;
-        char filePath[FILE_PATH_SIZE];
-        snprintf(filePath, sizeof(filePath), "/proc/%d/stat", pid);
+        struct stat stat_buffer;
+        char file_path[FILE_PATH_SIZE];
+        snprintf(file_path, sizeof(file_path), "/proc/%d/stat", pid);
 
-        if (stat(filePath, &statBuffer) == 0) {
-          struct passwd *userData = getpwuid(statBuffer.st_uid);
+        if (stat(file_path, &stat_buffer) == 0) {
+          struct passwd *user_data = getpwuid(stat_buffer.st_uid);
 
-          if (userData != NULL) {
-            printf("%d %s ", pid, userData->pw_name);
-            get_name(filePath);
+          if (user_data != NULL) {
+            printf("%d %s ", pid, user_data->pw_name);
+            get_name(file_path);
             printf(" %c\n", token[0]);
 
-            statCounter++;
+            stat_counter++;
 
-            if (statCounter >= STAT_COUNTER_MAX) {
+            if (stat_counter >= STAT_COUNTER_MAX) {
               break;
             }
           }
@@ -78,7 +90,7 @@ void *print_processes(void *dir) {
   return NULL;
 }
 
-void *read_input(void *unused) {
+void * read_input(void *unused) {
   // HACK O compilador dá um warning se a função não tiver argumentos (tem que
   // passar pelo menos um void). Se passar void, não tem como fazer casting
   // (pelo menos eu não consegui) na hora de criar a thread, porque a função
@@ -87,7 +99,6 @@ void *read_input(void *unused) {
   // mais elegante de resolver isso
 
   (void)unused;
-
   int process;
   int signal;
   while (scanf("%d %d", &process, &signal) != EOF) {
@@ -95,7 +106,7 @@ void *read_input(void *unused) {
     printf("Sinal %d\n", signal);
     // TODO faz o processamento do sinal
   }
-  keepRunning = false;
+  keep_running = false;
 
   return NULL;
 }
@@ -108,14 +119,14 @@ int main(void) {
     exit(1);
   }
 
-  pthread_t *threadHandles = malloc(2 * sizeof(pthread_t));
-  pthread_create(&threadHandles[0], NULL, print_processes, (void *)directory);
-  pthread_create(&threadHandles[1], NULL, read_input, NULL);
+  pthread_t *thread_handles = malloc(2 * sizeof(pthread_t));
+  pthread_create(&thread_handles[0], NULL, print_processes, (void *)directory);
+  pthread_create(&thread_handles[1], NULL, read_input, NULL);
 
-  pthread_join(threadHandles[0], NULL);
-  pthread_join(threadHandles[1], NULL);
+  pthread_join(thread_handles[0], NULL);
+  pthread_join(thread_handles[1], NULL);
 
-  free(threadHandles);
+  free(thread_handles);
 
   closedir(directory);
 }
