@@ -14,12 +14,6 @@
 #define FILE_PATH_SIZE 256
 #define STAT_COUNTER_MAX 20
 
-// Constantes para organização do display do top
-#define PID_DISPLAY_WIDTH 10
-#define USER_DISPLAY_WIDTH 10
-#define PROCNAME DISPLAY WIDTH 10
-#define STATE_DISPLAY_WIDTH 10
-
 volatile bool keep_running = true;
 
 static char *token;
@@ -36,14 +30,15 @@ void get_name(char *file_path) {
 
   token = strtok(buffer, " "); // PID
   token = strtok(NULL, " ");   // PROCNAME
-  fputs(token, stdout);
+  token[strlen(token) - 1] = '\0';
+  printf("%-31s", token + 1);
   token = strtok(NULL, " "); // STATE
   fclose(file_handler);
 }
 
 void display_top_header(void) { printf("|%-10s|", "PID"); }
 
-void *print_processes(void *dir) {
+void * print_processes(void *dir) {
   DIR *directory = (DIR *)dir;
 
   struct dirent *entry;
@@ -51,8 +46,8 @@ void *print_processes(void *dir) {
   while (keep_running) {
     int stat_counter = 0;
 
-    printf("\nPID     | User    | PROCNAME         | Estado    |\n");
-    printf("--------|---------|------------------|-----------|\n");
+    printf("\nPID    | User    | PROCNAME                      | Estado |\n");
+    printf("-------|---------|-------------------------------|--------|\n");
 
     while ((entry = readdir(directory))) {
       int pid;
@@ -68,9 +63,10 @@ void *print_processes(void *dir) {
           struct passwd *user_data = getpwuid(stat_buffer.st_uid);
 
           if (user_data != NULL) {
-            printf("%d %s ", pid, user_data->pw_name);
+            printf("%-8d", pid);
+            printf("%-10s ", user_data->pw_name);
             get_name(file_path);
-            printf(" %c\n", token[0]);
+            printf("%-10c\n", token[0]);
 
             stat_counter++;
 
@@ -87,7 +83,7 @@ void *print_processes(void *dir) {
   return NULL;
 }
 
-void *read_input(void *unused) {
+void * read_input(void *unused) {
   // HACK O compilador dá um warning se a função não tiver argumentos (tem que
   // passar pelo menos um void). Se passar void, não tem como fazer casting
   // (pelo menos eu não consegui) na hora de criar a thread, porque a função
