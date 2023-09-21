@@ -18,13 +18,28 @@ Igor Lacerda Faria da Silva igorlafarsi@gmail.com 50%
 
 3. Referências bibliográficas
 
-Livro tanembaum
-livro abraham
-https://www.digitalocean.com/community/tutorials/execvp-function-c-plus-plus
-https://man7.org/linux/man-pages/man2/open.2.html
-https://www.youtube.com/watch?v=cex9XrZCU14&list=PLfqABt5AS4FkW5mOn2Tn9ZZLLDwA3kZUY
+Livros:
+    - Tanenbaum, A. S. & Bos, H. (2014), Modern Operating Systems , Pearson , Boston, MA .
+    - Abraham Silberschatz, Peter Baer Galvin, Greg Gagne: Operating System Concepts, 10th Edition. Wiley 2018, ISBN 978-1-118-06333-0
+
+Web:
+    - https://www.digitalocean.com/community/tutorials/execvp-function-c-plus-plus
+    - https://man7.org/linux/man-pages/man2/open.2.html
+    - https://www.youtube.com/watch?v=cex9XrZCU14&list=PLfqABt5AS4FkW5mOn2Tn9ZZLLDwA3kZUY
+    - https://pubs.opengroup.org/onlinepubs/009604499/functions/kill.html#:~:text=The%20kill()%20function%20shall,no%20signal%20is%20actually%20sent.
+
+Youtube:
+    - https://www.youtube.com/@CodeVault
+    - https://www.youtube.com/@JacobSorber
 
 4. Estruturas de dados
 
 Descreva e justifique as estruturas de dados e algoritmos utilizados
 em sua solução.
+
+PARTE I - Desenvolvimento do Shell
+
+Para completar a construção do Shell proposto foi necessária uma maior familiarização com a parte prática da
+criação de novos processos, assim como da parte de criação de pipes.
+
+Para executar os comandos passados como 
