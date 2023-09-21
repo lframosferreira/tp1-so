@@ -2,10 +2,10 @@
 #include <dirent.h>
 #include <pthread.h>
 #include <pwd.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <signal.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -19,11 +19,9 @@ volatile bool keep_running = true;
 
 static char *token;
 
-void get_name(char *file_path)
-{
+void get_name(char *file_path) {
   FILE *file_handler = fopen(file_path, "r");
-  if (file_handler == NULL)
-  {
+  if (file_handler == NULL) {
     perror("Erro ao abrir arquivo: ");
     exit(1);
   }
@@ -39,37 +37,31 @@ void get_name(char *file_path)
   fclose(file_handler);
 }
 
-void *print_processes(void *dir)
-{
+void *print_processes(void *dir) {
   DIR *directory = (DIR *)dir;
 
   struct dirent *entry;
 
-  while (keep_running)
-  {
+  while (keep_running) {
     int stat_counter = 0;
 
     printf("\nPID    | User    | PROCNAME                      | Estado |\n");
     printf("-------|---------|-------------------------------|--------|\n");
 
-    while ((entry = readdir(directory)))
-    {
+    while ((entry = readdir(directory))) {
       int pid;
 
-      if (entry->d_type == DT_DIR && isdigit(entry->d_name[0]))
-      {
+      if (entry->d_type == DT_DIR && isdigit(entry->d_name[0])) {
         pid = atoi(entry->d_name);
 
         struct stat stat_buffer;
         char file_path[FILE_PATH_SIZE];
         snprintf(file_path, sizeof(file_path), "/proc/%d/stat", pid);
 
-        if (stat(file_path, &stat_buffer) == 0)
-        {
+        if (stat(file_path, &stat_buffer) == 0) {
           struct passwd *user_data = getpwuid(stat_buffer.st_uid);
 
-          if (user_data != NULL)
-          {
+          if (user_data != NULL) {
             printf("%-8d", pid);
             printf("%-10s ", user_data->pw_name);
             get_name(file_path);
@@ -77,8 +69,7 @@ void *print_processes(void *dir)
 
             stat_counter++;
 
-            if (stat_counter >= STAT_COUNTER_MAX)
-            {
+            if (stat_counter >= STAT_COUNTER_MAX) {
               break;
             }
           }
@@ -91,16 +82,13 @@ void *print_processes(void *dir)
   return NULL;
 }
 
-void *read_input(void *)
-{
+void *read_input(void *) {
   int pid;
   int signal;
-  while (scanf("%d %d", &pid, &signal) != EOF)
-  {
+  while (scanf("%d %d", &pid, &signal) != EOF) {
     printf("Processo %d\n", pid);
     printf("Sinal %d\n", signal);
-    if (kill(pid, signal) == -1)
-    {
+    if (kill(pid, signal) == -1) {
       fprintf(stdout, "Erro ao processar sinal\n");
       exit(EXIT_FAILURE);
     }
@@ -110,12 +98,10 @@ void *read_input(void *)
   return NULL;
 }
 
-int main(void)
-{
+int main(void) {
   DIR *directory = opendir("/proc");
 
-  if (directory == NULL)
-  {
+  if (directory == NULL) {
     perror("Erro ao abrir o diretório /proc: ");
     exit(1);
   }
