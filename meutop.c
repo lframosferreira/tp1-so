@@ -82,7 +82,7 @@ void *print_processes(void *dir) {
   return NULL;
 }
 
-void *read_input(void *) {
+void *read_input(void * /*unused*/) {
   int pid;
   int signal;
   while (scanf("%d %d", &pid, &signal) != EOF) {
