@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch CodeLLDB",
+      "type": "codelldb",
+      "request": "launch",
+      "preLaunchTask": "Compile C (Clang) (Debug)",
+      "expressions": "native",
+      "program": "${workspaceFolder}/${fileBasenameNoExtension}"
+    }
+  ]
+}
