@@ -41,12 +41,9 @@ void get_name(char *file_path) {
   fclose(file_handler);
 }
 
-void display_top_header()
-{
-    printf("|%-10s|", "PID");
-}
+void display_top_header(void) { printf("|%-10s|", "PID"); }
 
-void * print_processes(void *dir) {
+void *print_processes(void *dir) {
   DIR *directory = (DIR *)dir;
 
   struct dirent *entry;
@@ -90,7 +87,7 @@ void * print_processes(void *dir) {
   return NULL;
 }
 
-void * read_input(void *unused) {
+void *read_input(void *unused) {
   // HACK O compilador dá um warning se a função não tiver argumentos (tem que
   // passar pelo menos um void). Se passar void, não tem como fazer casting
   // (pelo menos eu não consegui) na hora de criar a thread, porque a função
@@ -104,7 +101,7 @@ void * read_input(void *unused) {
   while (scanf("%d %d", &process, &signal) != EOF) {
     printf("Processo %d\n", process);
     printf("Sinal %d\n", signal);
-    // TODO faz o processamento do sinal
+    // TODO(luisal): faz o processamento do sinal
   }
   keep_running = false;
 
