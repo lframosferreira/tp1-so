@@ -43,3 +43,7 @@ Para completar a construção do Shell proposto foi necessária uma maior famili
 criação de novos processos, assim como da parte de criação de pipes.
 
 Para executar os comandos passados como 
+
+PARTE II - Desenvolvimento do Top
+
+Inicialmente apenas foram extraídos os dados dos arquivos, como qualquer leitura de arquivo em C. Para extrair o campo "usuário", que não faz parte do arquivo, foi necessário verificar quem era o dono do arquivo usando uma biblioteca do sistema. Adicionalmente, como nem todo diretório da pasta /proc corresponde a um processo, foi adicionada essa verficação também. Em seguida, a função foi extraída e colocada em uma thread, seguindo o exemplo dos slides. Por fim, foi criada a função para a leitura e processamento de sinais, que também foi colocada em outra thread.
