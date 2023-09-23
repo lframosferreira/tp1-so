@@ -41,8 +41,16 @@ PARTE I - Desenvolvimento do Shell
 
 Para completar a construção do Shell proposto foi necessária uma maior familiarização com a parte prática da
 criação de novos processos, assim como da parte de criação de pipes.
+Para execução dos comandos passados no Shell, foi utilizada a função execvp(), quer permite a apssagem dos parâmetros
+do comando como um vetor de strings.
+Para os casos de redirecionamento, é necessário checar qual o tipo de redirecionamento utilizado, para que seja claro se o arquivo
+passado como parâmetro deverá ser utilizado como entrada ou saída do comando utilizado, e o arquivo possa ser duplicado para
+o local correto.
+Para os pipes, é necessário criar um processor filho referente a cada um dos comandos que serão executados, ou seja,
+tanto o comando do lado esquerdo quanto o comando do lado direito. O comando do lado esquerdo tem sua saída padrão redirecionada
+para a entrada do pipe, e o comando do lado direito tem sua entrada padrão redirecionada para a saída do pipe. No processo
+pai, utilizamos a função waitpid() para que os comandos sejam executados na ordem correta.
 
-Para executar os comandos passados como 
 
 PARTE II - Desenvolvimento do Top
 
