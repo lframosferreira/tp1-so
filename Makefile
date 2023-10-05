@@ -7,7 +7,7 @@ meutop:
 signaltester:
 	gcc signaltester.c -o signaltester -Wall
 
-rm:
+clean:
 	rm meutop
 	rm myshell
 	rm sh
