@@ -15,6 +15,9 @@
 #define FILE_PATH_SIZE 256
 #define STAT_COUNTER_MAX 20
 
+#define TERMINAL_ESCAPE_COMMAND "\033c"
+#define SLEEP_TIME 1
+
 volatile bool keep_running = true;
 
 static char *token;
@@ -44,9 +47,10 @@ void *print_processes(void *dir) {
 
   while (keep_running) {
     int stat_counter = 0;
+    fprintf(stdout, TERMINAL_ESCAPE_COMMAND);
 
-    printf("\nPID    | User    | PROCNAME                      | Estado |\n");
-    printf("-------|---------|-------------------------------|--------|\n");
+    printf("\nPID    | User          | PROCNAME                      | Estado |\n");
+    printf("-------|---------------|-------------------------------|--------|\n");
 
     while ((entry = readdir(directory))) {
       int pid;
@@ -68,7 +72,6 @@ void *print_processes(void *dir) {
             printf("%-10c\n", token[0]);
 
             stat_counter++;
-
             if (stat_counter >= STAT_COUNTER_MAX) {
               break;
             }
@@ -76,8 +79,8 @@ void *print_processes(void *dir) {
         }
       }
     }
-    rewinddir(directory);
-    sleep(1);
+    //rewinddir(directory);
+    sleep(SLEEP_TIME);
   }
   return NULL;
 }
@@ -89,12 +92,11 @@ void *read_input(void * /*unused*/) {
     printf("Processo %d\n", pid);
     printf("Sinal %d\n", signal);
     if (kill(pid, signal) == -1) {
-      fprintf(stdout, "Erro ao processar sinal\n");
+      perror("Erro ao processar sinal\n");
       exit(EXIT_FAILURE);
     }
   }
   keep_running = false;
-
   return NULL;
 }
 
@@ -103,7 +105,7 @@ int main(void) {
 
   if (directory == NULL) {
     perror("Erro ao abrir o diretório /proc: ");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   pthread_t *thread_handles = malloc(2 * sizeof(pthread_t));

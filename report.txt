@@ -27,6 +27,7 @@ Web:
     - https://man7.org/linux/man-pages/man2/open.2.html
     - https://www.youtube.com/watch?v=cex9XrZCU14&list=PLfqABt5AS4FkW5mOn2Tn9ZZLLDwA3kZUY
     - https://pubs.opengroup.org/onlinepubs/009604499/functions/kill.html#:~:text=The%20kill()%20function%20shall,no%20signal%20is%20actually%20sent.
+    - https://web.archive.org/web/20191222201924/http://www.termsys.demon.co.uk/vtansi.htm
 
 Youtube:
     - https://www.youtube.com/@CodeVault
