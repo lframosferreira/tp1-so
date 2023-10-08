@@ -35,7 +35,7 @@ void get_name(char *file_path) {
   token = strtok(buffer, " "); // PID
   token = strtok(NULL, " ");   // PROCNAME
   token[strlen(token) - 1] = '\0';
-  printf("%-31s", token + 1);
+  printf("%-32s", token + 1);
   token = strtok(NULL, " "); // STATE
   fclose(file_handler);
 }
@@ -49,8 +49,8 @@ void *print_processes(void *dir) {
     int stat_counter = 0;
     fprintf(stdout, TERMINAL_ESCAPE_COMMAND);
 
-    printf("\nPID    | User          | PROCNAME                      | Estado |\n");
-    printf("-------|---------------|-------------------------------|--------|\n");
+    printf("\nPID    | User            | PROCNAME                      | Estado |\n");
+    printf("-------|-----------------|-------------------------------|--------|\n");
 
     while ((entry = readdir(directory))) {
       int pid;
@@ -67,7 +67,7 @@ void *print_processes(void *dir) {
 
           if (user_data != NULL) {
             printf("%-8d", pid);
-            printf("%-10s ", user_data->pw_name);
+            printf("%-18s", user_data->pw_name);
             get_name(file_path);
             printf("%-10c\n", token[0]);
 
