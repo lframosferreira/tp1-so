@@ -16,7 +16,7 @@
 #define STAT_COUNTER_MAX 20
 
 #define TERMINAL_ESCAPE_COMMAND "\033c"
-#define SLEEP_TIME 1
+#define SLEEP_TIME 3
 
 volatile bool keep_running = true;
 
@@ -79,7 +79,7 @@ void *print_processes(void *dir) {
         }
       }
     }
-    //rewinddir(directory);
+    rewinddir(directory);
     sleep(SLEEP_TIME);
   }
   return NULL;
