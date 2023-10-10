@@ -16,7 +16,7 @@
 #define STAT_COUNTER_MAX 20
 
 #define TERMINAL_ESCAPE_COMMAND "\033c"
-#define SLEEP_TIME 3
+#define SLEEP_TIME 1
 
 volatile bool keep_running = true;
 

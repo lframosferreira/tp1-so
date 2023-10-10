@@ -28,6 +28,7 @@ Web:
     - https://www.youtube.com/watch?v=cex9XrZCU14&list=PLfqABt5AS4FkW5mOn2Tn9ZZLLDwA3kZUY
     - https://pubs.opengroup.org/onlinepubs/009604499/functions/kill.html#:~:text=The%20kill()%20function%20shall,no%20signal%20is%20actually%20sent.
     - https://web.archive.org/web/20191222201924/http://www.termsys.demon.co.uk/vtansi.htm
+    - https://www.cs.kent.edu/~ruttan/sysprog/lectures/multi-thread/multi-thread.html
 
 Youtube:
     - https://www.youtube.com/@CodeVault
@@ -60,5 +61,4 @@ Inicialmente apenas foram extraídos os dados dos arquivos, como qualquer leitur
 
 PERGUNTAS MONITORIA:
 
-1. Como fazer a leitura do input de sinal para processo sem que o que está sendo digitado desapareça?
 2. Deve haver algum tratamento de erros para o envio de sinais? Por exemplo, o pid passado na verdade ser algo que não é um inteiro.
