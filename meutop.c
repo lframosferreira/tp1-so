@@ -49,8 +49,10 @@ void *print_processes(void *dir) {
     int stat_counter = 0;
     fprintf(stdout, TERMINAL_ESCAPE_COMMAND);
 
-    printf("\nPID    | User            | PROCNAME                      | Estado |\n");
-    printf("-------|-----------------|-------------------------------|--------|\n");
+    printf("\nPID    | User            | PROCNAME                      | "
+           "Estado |\n");
+    printf("-------|-----------------|-------------------------------|--------|"
+           "\n");
 
     while ((entry = readdir(directory))) {
       int pid;
