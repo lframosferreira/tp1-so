@@ -42,24 +42,8 @@ em sua solução.
 
 PARTE I - Desenvolvimento do Shell
 
-Para completar a construção do Shell proposto foi necessária uma maior familiarização com a parte prática da
-criação de novos processos, assim como da parte de criação de pipes.
-Para execução dos comandos passados no Shell, foi utilizada a função execvp(), quer permite a apssagem dos parâmetros
-do comando como um vetor de strings.
-Para os casos de redirecionamento, é necessário checar qual o tipo de redirecionamento utilizado, para que seja claro se o arquivo
-passado como parâmetro deverá ser utilizado como entrada ou saída do comando utilizado, e o arquivo possa ser duplicado para
-o local correto.
-Para os pipes, é necessário criar um processor filho referente a cada um dos comandos que serão executados, ou seja,
-tanto o comando do lado esquerdo quanto o comando do lado direito. O comando do lado esquerdo tem sua saída padrão redirecionada
-para a entrada do pipe, e o comando do lado direito tem sua entrada padrão redirecionada para a saída do pipe. No processo
-pai, utilizamos a função waitpid() para que os comandos sejam executados na ordem correta.
+Para completar a construção do Shell proposto foi necessária uma maior familiarização com a parte prática da criação de novos processos, assim como da parte de criação de pipes. Para execução dos comandos passados no Shell, foi utilizada a função execvp(), quer permite a passagem dos parâmetros do comando como um vetor de strings. Para os casos de redirecionamento, é necessário checar qual o tipo de redirecionamento utilizado, para que seja claro se o arquivo passado como parâmetro deverá ser utilizado como entrada ou saída do comando utilizado, e o arquivo possa ser duplicado para o local correto. Para os pipes, é necessário criar um processor filho referente a cada um dos comandos que serão executados, ou seja, tanto o comando do lado esquerdo quanto o comando do lado direito. O comando do lado esquerdo tem sua saída padrão redirecionada para a entrada do pipe, e o comando do lado direito tem sua entrada padrão redirecionada para a saída do pipe. No processo pai, utilizamos a função waitpid() para que os comandos sejam executados na ordem correta.
 
 PARTE II - Desenvolvimento do Top
 
-Inicialmente apenas foram extraídos os dados dos arquivos, como qualquer leitura de arquivo em C. Para extrair o campo "usuário", que 
-não faz parte do arquivo, foi necessário verificar quem era o dono do arquivo usando uma biblioteca do sistema. Adicionalmente, como nem todo 
-diretório da pasta /proc corresponde a um processo, foi adicionada essa verficação também. Em particular, checa-se se o nome do diretório 
-é um número inteiro, característica da forma como o diretória é organizado, isto é, as pastas relativas a um processo possuem como nome o inteiro 
-identificador desses processos. Em seguida, a função foi extraída e colocada em uma thread, seguindo o exemplo dos slides disponibilizados pelo professor.
-Por fim, foi criada a função para a leitura e processamento de sinais, que também foi colocada em outra thread. A biblioteca pthreads foi utilizada, conforme
-sugerido pela especificação do trabalho.
+Inicialmente apenas foram extraídos os dados dos arquivos da pasta /proc/$PID/stat. Para extrair o campo "usuário", que não faz parte do arquivo, foi necessário verificar quem era o dono do arquivo usando uma biblioteca do sistema. Adicionalmente, como nem todo diretório da pasta /proc corresponde a um processo, foi adicionada essa verificação também. Em particular, checa-se se o nome do diretório é um número (inteiro), porque são justamente essas pastas que representam processos. Em seguida, a função que imprimia os dados foi extraída e colocada em uma thread, seguindo o exemplo dos slides disponibilizados pelo professor. Por fim, foi criada a função para a leitura e processamento de sinais, que também foi colocada em outra thread. A biblioteca pthreads foi utilizada, conforme sugerido pela especificação do trabalho.
