@@ -10,7 +10,4 @@ signaltester: signaltester.c
 	gcc signaltester.c -o signaltester -Wall
 
 clean:
-	rm meutop
-	rm myshell
-	rm sh
-	rm signaltester
+	rm -f meutop myshell sh signaltester

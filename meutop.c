@@ -91,8 +91,6 @@ void *read_input(void * /*unused*/) {
   int pid;
   int signal;
   while (scanf("%d %d", &pid, &signal) != EOF) {
-    printf("Processo %d\n", pid);
-    printf("Sinal %d\n", signal);
     if (kill(pid, signal) == -1) {
       perror("Erro ao processar sinal\n");
       exit(EXIT_FAILURE);
