@@ -35,6 +35,8 @@ Youtube:
     - https://www.youtube.com/@CodeVault
     - https://www.youtube.com/@JacobSorber
 
+O repositório no GitHub utilizado para o desenvolvimento desse trabalho pode ser encontrado no seguinte endereço: https://github.com/lframosferreira/tp1-so
+
 4. Estruturas de dados
 
 Descreva e justifique as estruturas de dados e algoritmos utilizados
